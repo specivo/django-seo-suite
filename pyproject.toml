@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-seo-suite"
+version = "0.1.0"
+description = "A lightweight, extensible SEO metadata layer for Django: titles, meta tags, canonical URLs, hreflang, JSON-LD schema and Open Graph for models and views."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "5w0rdf15h" }]
+keywords = ["django", "seo", "metadata", "json-ld", "schema.org", "open-graph", "hreflang", "sitemap", "canonical"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Site Management",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["django>=4.2"]
+
+[project.optional-dependencies]
+slugify = ["python-slugify>=8.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-django>=4.5",
+    "pytest-cov",
+    "ruff",
+]
+
+# Discovery group that paid / third-party extension packages publish into.
+# The free package ships none; seo_suite.apps.SeoSuiteConfig.ready() loads any
+# entry points registered here at startup (in addition to the seo_extensions.py
+# autodiscovery convention).
+[project.entry-points."seo_suite.extensions"]
+
+[project.urls]
+Homepage = "https://github.com/specivo/django-seo-suite"
+Documentation = "https://specivo.io/docs/django-seo-suite/"
+Repository = "https://github.com/specivo/django-seo-suite"
+Changelog = "https://github.com/specivo/django-seo-suite/blob/main/CHANGELOG.md"
+Issues = "https://github.com/specivo/django-seo-suite/issues"
+
+[tool.setuptools.packages.find]
+include = ["seo_suite*"]
+
+[tool.setuptools.package-data]
+seo_suite = ["templates/**/*.html"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["**/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "DJ"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test models are throwaway fixtures; __str__ is noise.
+"tests/**" = ["DJ008"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings_test"
+python_files = ["test_*.py"]
+pythonpath = ["."]
