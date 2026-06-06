@@ -6,6 +6,17 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-06
+
+### Added
+- Official support for **Django 6.0**. The test suite passes unchanged on 6.0; CI now
+  runs against the latest release of each supported Django line (4.2, 5.2, 6.0) rather
+  than every 5.x minor.
+
+### Changed
+- Trove classifiers now advertise Django 4.2, 5.2, and 6.0 (the latest of each major
+  series). The supported range is unchanged: Django 4.2+.
+
 ## [0.1.0] - 2026-06-06
 
 Initial release.
@@ -41,5 +52,6 @@ Initial release.
 
 - Django 4.2+ and Python 3.10+. The only hard dependency is Django.
 
-[Unreleased]: https://github.com/specivo/django-seo-suite/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/specivo/django-seo-suite/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/specivo/django-seo-suite/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/specivo/django-seo-suite/releases/tag/v0.1.0
