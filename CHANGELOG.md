@@ -6,6 +6,18 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-09
+
+### Added
+- Optional `get_schema_image(key, context)` hook on objects. When present, its
+  return value is used verbatim as a schema-profile's `image` field — a string,
+  a schema.org `ImageObject` dict (e.g. `contentUrl` + `thumbnailUrl` + `width`/
+  `height`), or a list of either. The `key` argument acts as a per-profile
+  switch (return `None` to fall back to the convention bare-string or skip).
+  Runs at resolve time, so the output rides the object resolution cache when
+  `CACHE_TTL` is enabled. Fully backward compatible: with no hook, output is
+  unchanged.
+
 ## [0.1.1] - 2026-06-06
 
 ### Added

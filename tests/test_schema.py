@@ -120,6 +120,87 @@ class TestOverrideHook:
         assert block["extra"] == "x"
 
 
+class TestImageHook:
+    IMAGE_OBJECT = {
+        "@type": "ImageObject",
+        "contentUrl": "https://example.com/media/originals/foo.jpg",
+        "thumbnailUrl": "https://example.com/media/cache/foo_400x300.jpg",
+        "width": 2400,
+        "height": 1600,
+    }
+
+    def test_hook_value_emitted_verbatim_and_overrides_convention(self):
+        image_object = self.IMAGE_OBJECT
+
+        class _Obj:
+            headline = "Big News"
+            image = "/img/convention.jpg"  # convention bare string, should be overridden
+
+            def get_schema_image(self, key, context=None):
+                return image_object
+
+        block = build_profiles(["Article"], _Obj(), CTX)[0]
+        assert block["image"] == image_object
+
+    def test_hook_is_a_per_profile_switch(self):
+        image_object = self.IMAGE_OBJECT
+
+        class _Obj:
+            headline = "Big News"
+            name = "Big News"
+
+            def get_schema_image(self, key, context=None):
+                return image_object if key == "Article" else None
+
+        article, product = build_profiles(["Article", "Product"], _Obj(), CTX)
+        assert article["image"] == image_object
+        assert "image" not in product  # switched off for Product, no convention image present
+
+    def test_hook_returning_none_falls_back_to_convention(self):
+        class _Obj:
+            headline = "Big News"
+            image = "/img/convention.jpg"
+
+            def get_schema_image(self, key, context=None):
+                return None
+
+        block = build_profiles(["Article"], _Obj(), CTX)[0]
+        assert block["image"] == "/img/convention.jpg"
+
+    def test_hook_works_on_any_profile(self):
+        image_object = self.IMAGE_OBJECT
+
+        class _Obj:
+            full_name = "Jane Doe"
+
+            def get_schema_image(self, key, context=None):
+                return image_object
+
+        block = build_profiles(["Person"], _Obj(), CTX)[0]
+        assert block["image"] == image_object
+
+    def test_no_hook_leaves_behaviour_unchanged(self):
+        class _Obj:
+            headline = "Big News"
+            image = "/img/convention.jpg"
+
+        block = build_profiles(["Article"], _Obj(), CTX)[0]
+        assert block["image"] == "/img/convention.jpg"
+
+    def test_get_schema_data_still_wins_over_image_hook(self):
+        class _Obj:
+            headline = "Big News"
+
+            def get_schema_image(self, key, context=None):
+                return {"@type": "ImageObject", "contentUrl": "from-hook"}
+
+            def get_schema_data(self, key, context=None):
+                return {"image": "from-get-schema-data"}
+
+        block = build_profiles(["Article"], _Obj(), CTX)[0]
+        assert block["image"] == "from-get-schema-data"
+
+
 class TestUnknownProfile:
     def test_unknown_key_skipped(self):
         assert build_profiles(["DoesNotExist"], _FakeArticle(), CTX) == []

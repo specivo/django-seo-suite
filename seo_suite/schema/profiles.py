@@ -56,6 +56,26 @@ def _schema_overrides(obj: Any, key: str, context) -> dict:
     return {}
 
 
+def _schema_image(obj: Any, key: str, context) -> Any:
+    """Optional ``get_schema_image`` hook value for ``key`` (else ``None``).
+
+    Returned verbatim — a string URL, an ``ImageObject`` dict, or a list of
+    either. The ``key`` argument lets a project switch images on per profile by
+    returning a value only for the keys it wants. Heavy hooks (thumbnail
+    backends, dimension probes) run at resolve time, so the value rides the
+    object resolution cache when ``CACHE_TTL`` is enabled.
+    """
+    hook = getattr(obj, "get_schema_image", None)
+    if not callable(hook):
+        return None
+    try:
+        return hook(key, context)
+    except TypeError:
+        return hook(key)
+    except Exception:  # noqa: BLE001 - a bad hook must not break the page
+        return None
+
+
 def _canonical(obj: Any, context) -> Any:
     url = _read(obj, "get_absolute_url")
     if not url:
@@ -77,6 +97,9 @@ class _BaseProfile(SchemaProfile):
     def build(self, obj, context) -> dict | None:
         data = self.base()
         self.populate(data, obj, context)
+        image = _schema_image(obj, self.key, context)
+        if image not in (None, "", []):
+            data["image"] = image
         data.update(_schema_overrides(obj, self.key, context))
         return data if self._is_meaningful(data) else None
 
