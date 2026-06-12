@@ -19,3 +19,21 @@ class SeoSuiteConfig(AppConfig):
         connect_invalidation()
         connect_robots_invalidation()
         autodiscover_extensions()
+        self._install_admin_grouping()
+
+    @staticmethod
+    def _install_admin_grouping() -> None:
+        """Render the suite's apps as one 'SEO Suite' admin section (opt-out)."""
+        from django.apps import apps as django_apps
+
+        if not django_apps.is_installed("django.contrib.admin"):
+            return
+        from .conf import get_settings
+
+        if not get_settings()["ADMIN_GROUP_APPS"]:
+            return
+        from django.contrib import admin
+
+        from .admin_grouping import install_app_grouping
+
+        install_app_grouping(admin.site)

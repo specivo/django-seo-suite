@@ -6,6 +6,15 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-12
+
+### Added
+- The admin index now renders core and the optional contrib apps (`seopath` /
+  `seoobject`) as a single **SEO Suite** section instead of separate boxes. Wraps
+  the default admin site's `get_app_list` at startup, independent of the admin's
+  URL path. Disable with `SEO_SUITE["ADMIN_GROUP_APPS"] = False`; for a custom
+  `AdminSite`, call `seo_suite.admin_grouping.install_app_grouping(site)`.
+
 ## [0.2.0] - 2026-06-09
 
 ### Added

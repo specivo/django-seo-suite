@@ -3,4 +3,4 @@
 Public API (semver-governed). See README for the stability contract.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

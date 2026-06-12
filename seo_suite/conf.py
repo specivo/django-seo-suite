@@ -54,6 +54,8 @@ DEFAULTS: dict[str, Any] = {
     # --- schema ---
     "DEFAULT_SCHEMA_PROFILES": [],
     "JSONLD_SERIALIZER": "seo_suite.schema.default_serializer",
+    # --- admin ---
+    "ADMIN_GROUP_APPS": True,  # merge seo_suite* apps into one admin index section
 }
 
 # Settings expressed as dotted import strings, resolved lazily to objects.
